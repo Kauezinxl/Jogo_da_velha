@@ -1,0 +1,248 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Press Start 2P', cursive;
+    background-color: #1a1a1a;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Fundo animado estilo Terraria */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("terrariamundo.jpg") repeat-x center/cover;
+    animation: moveBackground 30s linear infinite;
+    z-index: -3;
+}
+
+@keyframes moveBackground {
+    from { background-position: 0 0; }
+    to { background-position: -1000px 0; }
+}
+
+/* Bosses animados */
+/* Olho se movimentando por toda a tela */
+body::after {
+    content: "";
+    position: fixed;
+    width: 150px;
+    height: 150px;
+    background: url("olho2.jpg") center/contain no-repeat;
+    animation: moveEye 20s linear infinite;
+    z-index: -2;
+    border-radius: 50%; /* para suavizar se quiser */
+}
+
+/* Animação que move o olho em vários pontos da viewport */
+@keyframes moveEye {
+    0%   { top: 10%; left: 5%; }
+    20%  { top: 70%; left: 10%; }
+    40%  { top: 80%; left: 80%; }
+    60%  { top: 30%; left: 85%; }
+    80%  { top: 20%; left: 40%; }
+    100% { top: 10%; left: 5%; }
+}
+
+
+@keyframes moveBoss {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(calc(100vw + 200px)); }
+    100% { transform: translateX(0); }
+}
+
+/* Texto de status */
+div {
+    font-size: 18px;
+    margin: 20px 0;
+    text-shadow: 2px 2px black;
+}
+
+/* Tabuleiro */
+/* Tabuleiro escuro */
+table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: rgba(10, 10, 10, 0.9); /* fundo mais escuro e opaco */
+    box-shadow: 0 0 30px #000;
+}
+
+/* Células do tabuleiro */
+td {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #222; /* borda bem escura */
+    font-size: 40px;
+    font-weight: bold;
+    color: #ffea00; /* amarelo forte para contraste */
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    background-color: rgba(20, 20, 20, 0.9); /* fundo escuro da célula */
+    transition: background-color 0.3s ease, transform 0.15s ease;
+}
+
+/* Efeito hover nas células vazias */
+td:hover:empty {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Marcações X e O com destaque forte */
+td.marked {
+    animation: fadeInMark 0.4s ease forwards;
+    color: #ffea00; /* amarelo vibrante */
+}
+
+/* Destaque linha vencedora */
+td.highlight {
+    background-color: #ffea00;
+    color: #111;
+    animation: highlightPulse 1s ease-in-out infinite alternate;
+    font-weight: bolder;
+    text-shadow: 1px 1px 4px #000;
+}
+
+/* Feedback de clique */
+td.clicked {
+    transform: scale(0.9);
+}
+
+/* Desabilita cursor no fim do jogo */
+table.finished td {
+    cursor: default;
+}
+
+/* Destaque animado para linha vencedora */
+td.highlight {
+    background-color: #ffd700;
+    color: #000;
+    animation: highlightPulse 1s ease-in-out infinite alternate;
+    font-weight: bolder;
+    text-shadow: 1px 1px 2px #000;
+}
+
+@keyframes highlightPulse {
+    0% {
+        background-color: #ffd700;
+        color: #000;
+    }
+    100% {
+        background-color: #ffae00;
+        color: #111;
+    }
+}
+
+/* Feedback visual rápido ao clicar */
+td.clicked {
+    transform: scale(0.9);
+}
+
+/* Botão reiniciar */
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    background-color: #444;
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+}
+
+button:hover {
+    background-color: #666;
+    transform: scale(1.1);
+}
+
+/* Texto do ganhador piscando */
+.winnerText {
+    animation: winnerBlink 1.2s infinite alternate;
+    font-size: 22px;
+    color: yellow;
+    text-shadow: 0 0 10px yellow;
+}
+
+@keyframes winnerBlink {
+    0% {
+        opacity: 1;
+        color: yellow;
+        text-shadow: 0 0 10px yellow;
+    }
+    100% {
+        opacity: 0.6;
+        color: orange;
+        text-shadow: 0 0 20px orange;
+    }
+}
+
+/* Tela modal ganhador */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: #222;
+    border: 3px solid #ffcc00;
+    padding: 30px 50px;
+    text-align: center;
+    color: #ffcc00;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 24px;
+    box-shadow: 0 0 20px #ffcc00;
+    border-radius: 10px;
+    animation: modalFadeIn 0.5s ease forwards;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-content button {
+    margin-top: 20px;
+    padding: 10px 25px;
+    background-color: #ffcc00;
+    color: #222;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+}
+
+.modal-content button:hover {
+    background-color: #e6b800;
+}
