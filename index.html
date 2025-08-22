@@ -1,14 +1,30 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo da Velha</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Ícone de configuração -->
+    <div id="configIcon">&#9881;</div>
+
+    <!-- Menu de configuração flutuante -->
+    <div id="configMenu" class="hidden">
+        <label>
+            <input type="radio" name="mode" value="player" checked> Jogador vs Jogador
+        </label>
+        <label>
+            <input type="radio" name="mode" value="bot"> Jogador vs Bot
+        </label>
+    </div>
+
+    <!-- Status e tabuleiro -->
     <div></div>
     <table></table>
+
+    <!-- Botão reiniciar -->
     <button id="btnRestart">Reiniciar</button>
 
     <!-- Modal de ganhador -->

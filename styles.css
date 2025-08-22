@@ -55,13 +55,6 @@ body::after {
     100% { top: 10%; left: 5%; }
 }
 
-
-@keyframes moveBoss {
-    0% { transform: translateX(0); }
-    50% { transform: translateX(calc(100vw + 200px)); }
-    100% { transform: translateX(0); }
-}
-
 /* Texto de status */
 div {
     font-size: 18px;

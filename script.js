@@ -5,6 +5,16 @@ let divElemento = document.querySelector("div"),
     modalMsg = document.getElementById("winnerMessage"),
     modalRestartBtn = document.getElementById("modalRestartBtn");
 
+let gameMode = 'player'; // modo padrão Jogador vs Jogador
+
+// Atualiza o modo ao selecionar (Bot ou Player)
+document.querySelectorAll('input[name="mode"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        gameMode = e.target.value;
+        Game.start(); // reinicia ao mudar de modo
+    });
+});
+
 let Game = {
     start() {
         this.field = [
@@ -19,6 +29,7 @@ let Game = {
         modal.classList.add("hidden");
         tabelaElemento.classList.remove("finished");
         this.render();
+        this.updateModeText();
     },
 
     nextPlayer() {
@@ -46,10 +57,88 @@ let Game = {
                 }
             } else {
                 this.nextPlayer();
+
+                // Se for vez do Bot e modo bot, joga automaticamente
+                if (this.currentPlayer === 'O' && !this.isFinished && gameMode === 'bot') {
+                    setTimeout(() => this.botHardcore(), 300);
+                }
             }
 
             this.render();
         }
+    },
+
+    botHardcore() {
+        let bestScore = -Infinity;
+        let move;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (this.field[i][j] === '') {
+                    this.field[i][j] = 'O';
+                    let score = this.minimax(this.field, 0, false);
+                    this.field[i][j] = '';
+                    if (score > bestScore) {
+                        bestScore = score;
+                        move = { i, j };
+                    }
+                }
+            }
+        }
+        if (move) {
+            let td = tabelaElemento.rows[move.i].cells[move.j];
+            this.selfField(move.i, move.j, td);
+        }
+    },
+
+    minimax(board, depth, isMaximizing) {
+        let winner = this.evaluateBoard(board);
+        if (winner !== null) {
+            if (winner === 'O') return 10 - depth;
+            if (winner === 'X') return depth - 10;
+            if (winner === 'tie') return 0;
+        }
+
+        if (isMaximizing) {
+            let bestScore = -Infinity;
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (board[i][j] === '') {
+                        board[i][j] = 'O';
+                        let score = this.minimax(board, depth + 1, false);
+                        board[i][j] = '';
+                        bestScore = Math.max(score, bestScore);
+                    }
+                }
+            }
+            return bestScore;
+        } else {
+            let bestScore = Infinity;
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (board[i][j] === '') {
+                        board[i][j] = 'X';
+                        let score = this.minimax(board, depth + 1, true);
+                        board[i][j] = '';
+                        bestScore = Math.min(score, bestScore);
+                    }
+                }
+            }
+            return bestScore;
+        }
+    },
+
+    evaluateBoard(board) {
+        for (let i = 0; i < 3; i++) {
+            if (board[i][0] && board[i][0] === board[i][1] && board[i][1] === board[i][2]) return board[i][0];
+            if (board[0][i] && board[0][i] === board[1][i] && board[1][i] === board[2][i]) return board[0][i];
+        }
+        if (board[0][0] && board[0][0] === board[1][1] && board[1][1] === board[2][2]) return board[0][0];
+        if (board[0][2] && board[0][2] === board[1][1] && board[1][1] === board[2][0]) return board[0][2];
+
+        let openSpots = board.flat().filter(c => c === '');
+        if (openSpots.length === 0) return 'tie';
+
+        return null;
     },
 
     isGameOver() {
@@ -93,6 +182,21 @@ let Game = {
     showModal(message) {
         modalMsg.textContent = message;
         modal.classList.remove("hidden");
+    },
+
+    updateModeText() {
+        // Cria ou atualiza uma div mostrando se está contra bot ou player
+        let modeDiv = document.getElementById("modeText");
+        if (!modeDiv) {
+            modeDiv = document.createElement("div");
+            modeDiv.id = "modeText";
+            modeDiv.style.marginTop = "10px";
+            modeDiv.style.fontSize = "16px";
+            modeDiv.style.fontWeight = "bold";
+            modeDiv.style.color = "#ffea00";
+            document.body.insertBefore(modeDiv, tabelaElemento);
+        }
+        modeDiv.textContent = gameMode === "bot" ? "Modo: Jogando contra BOT" : "Modo: Jogador vs Jogador";
     },
 
     render() {
